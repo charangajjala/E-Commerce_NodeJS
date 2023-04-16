@@ -1,8 +1,18 @@
+import Joi from "joi";
 import { sendError } from "../utils/error.js";
 
 export class BaseValidator {
   static reqSchema;
   static resSchema;
+  static reqParamSchema;
+  static reqQuerySchema;
+
+  static ObjectId = Joi.string()
+    .regex(/^[a-f\d]{24}$/i)
+    .required()
+    .messages({
+      "string.pattern.base": "Needs MongoDB ObjectID ", // Custom error message for invalid ID format
+    });
 
   /**
    * Request Input Validation
@@ -10,14 +20,26 @@ export class BaseValidator {
    */
   static reqValidator() {
     const validatorMiddleware = (req, res, next) => {
-      console.log("######################################################################");
+      console.log(
+        "######################################################################"
+      );
       console.log("Request:", req.method, req.originalUrl);
       console.log(req.body);
-      const { error } = this.reqSchema.validate(req.body, {
-        abortEarly: false,
-      });
-      if (error) {
-        throw sendError(422, { data: this.extractMessages(error.details) });
+      console.log(req.params);
+      console.log(req.query);
+
+      let finalErrorMessages = {};
+
+      const bodyErros = this.validate(req.body, this.reqSchema);
+      const paramErros = this.validate(req.params, this.reqParamSchema);
+      const queryErros = this.validate(req.query, this.reqQuerySchema);
+
+      if (bodyErros) finalErrorMessages.bodyErros = bodyErros;
+      if (paramErros) finalErrorMessages.paramErros = paramErros;
+      if (queryErros) finalErrorMessages.queryErros = queryErros;
+
+      if (Object.keys(finalErrorMessages).length !== 0) {
+        throw sendError(422, { data: finalErrorMessages });
       }
       next();
     };
@@ -59,6 +81,20 @@ export class BaseValidator {
     return validatorMiddleware;
   }
 
+  static validate(data, schema) {
+    console.log("data", data);
+    if (Object.keys(data).length !== 0) {
+      const { error } = schema.validate(data, {
+        abortEarly: false,
+      });
+      if (error) {
+        // throw sendError(422, { data: this.extractMessages(error.details) });
+        const msgs = this.extractMessages(error.details);
+        return msgs;
+      }
+    }
+    return null;
+  }
   /**
    * Utility to extract validation messages
    * @param {Object} details

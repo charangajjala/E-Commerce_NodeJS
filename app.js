@@ -4,6 +4,7 @@ import swaggerUI from "swagger-ui-express";
 
 import startServer from "./config/server.js";
 import appRoutes from "./routes/index.js";
+import { setUpPassport } from "./config/passport.js";
 import { sendError } from "./utils/error.js";
 import { errorMiddleware } from "./middlewares/errroMiddlewares.js";
 import swDoc from "./swagger/swagger.js";
@@ -11,7 +12,9 @@ import swDoc from "./swagger/swagger.js";
 const app = express();
 
 app.use(bodyParser.json());
-app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(swDoc))
+setUpPassport(app);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swDoc));
+
 app.use("/api", appRoutes);
 
 app.use("/", (req, res, next) => {

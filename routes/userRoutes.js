@@ -10,4 +10,18 @@ router.post(
   userValidator.postSignUp.resValidateSender()
 );
 
+router.post(
+  "/login",
+  userValidator.postLogin.reqValidator(),
+  userController.postLogin.serve,
+  userValidator.postLogin.resValidateSender()
+);
+
+router.get(
+  "/:id",
+  userValidator.getUser.reqValidator(),
+  userController.getUser.serve,
+  userValidator.getUser.resValidateSender()
+);
+
 export default router;
