@@ -101,7 +101,7 @@ export class postLogin {
       }
       await this.validateCredentials(user.password, password);
       const userId = user._id.toString();
-      const token = await jwt.sign({ userId }, "mylongsecretkey", {
+      const token = jwt.sign({ userId }, "mylongsecretkey", {
         expiresIn: "1h",
       });
       res.data = { token, userId };

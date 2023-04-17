@@ -20,7 +20,7 @@ export const setUpPassport = (app) => {
       // console.log('payload',jwtPayload);
       // console.log('sub',jwtPayload.sub);
       try {
-        const user = await User.findOne({ id: jwtPayload.sub });
+        const user = await User.findById(jwtPayload.userId);
         if (!user) return done(null, false);
         return done(null, user);
       } catch (error) {
@@ -29,5 +29,3 @@ export const setUpPassport = (app) => {
     })
   );
 };
-
-
