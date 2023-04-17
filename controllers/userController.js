@@ -142,6 +142,7 @@ export class getUser {
    */
   static serve = async (req, res, next) => {
     console.log("<------userContoller.getUser.serve----->");
+    // console.log('user',req.user);
     try {
       const userId = req.params.id;
       const user = await User.findById(userId);

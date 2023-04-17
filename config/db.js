@@ -14,5 +14,6 @@ const CONNECTION_STRING = `mongodb+srv://${NAME}:${PASSWORD}@cluster0.ktgx7.mong
  */
 export default async function connectToMongoDB() {
   await mongoose.connect(CONNECTION_STRING);
+  console.log('*******************************************************************************');
   console.log("Connected to MongoDB");
 };

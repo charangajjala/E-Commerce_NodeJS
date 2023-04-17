@@ -23,10 +23,10 @@ export class BaseValidator {
       console.log(
         "######################################################################"
       );
-      console.log("Request:", req.method, req.originalUrl);
-      console.log(req.body);
-      console.log(req.params);
-      console.log(req.query);
+      console.log("REQUEST:", req.method, req.originalUrl);
+      console.log("Body", req.body);
+      console.log("Params", req.params);
+      console.log("Query", req.query);
 
       let finalErrorMessages = {};
 
@@ -73,7 +73,7 @@ export class BaseValidator {
         await session.commitTransaction();
         console.log("Transaction Comitted");
       }
-      console.log("Response:");
+      console.log("RESPONSE:");
       console.log(res.statusCode);
       console.log(res.data);
       return res.status(res.statusCode).json(res.data);
@@ -82,7 +82,6 @@ export class BaseValidator {
   }
 
   static validate(data, schema) {
-    console.log("data", data);
     if (Object.keys(data).length !== 0) {
       const { error } = schema.validate(data, {
         abortEarly: false,

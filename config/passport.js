@@ -17,7 +17,8 @@ export const setUpPassport = (app) => {
 
   passport.use(
     new JWTStrategy(opts, async (jwtPayload, done) => {
-      console.log(jwtPayload);
+      // console.log('payload',jwtPayload);
+      // console.log('sub',jwtPayload.sub);
       try {
         const user = await User.findOne({ id: jwtPayload.sub });
         if (!user) return done(null, false);
@@ -28,3 +29,5 @@ export const setUpPassport = (app) => {
     })
   );
 };
+
+

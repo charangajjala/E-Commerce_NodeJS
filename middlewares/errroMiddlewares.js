@@ -1,6 +1,6 @@
 /**
  * Default error handler middleware
- * @param {Object} err 
+ * @param {Object} err
  * @param {Object} req
  * @param {Object} res
  * @param {Object} next
@@ -8,11 +8,12 @@
  */
 export const errorMiddleware = (err, req, res, next) => {
   console.error("Got", err);
-  let statusCode = err.statusCode;
+  let statusCode = err.statusCode || err.status;
   let message = err.message;
   const data = err.data;
+  const validCodes = [400, 401, 422, 404, 500];
 
-  if (!statusCode) {
+  if (!statusCode || !validCodes.includes(statusCode)) {
     statusCode = 500;
     message = "Internal Server Error";
   }
@@ -35,7 +36,7 @@ export const errorMiddleware = (err, req, res, next) => {
     }
   }
   // console.log("Response:", { statusCode, message });
-  console.log("Response:");
+  console.log("RESPONSE:");
   if (statusCode === 422) {
     console.log(statusCode);
     console.log({ message, data });
