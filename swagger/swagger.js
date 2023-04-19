@@ -1,5 +1,8 @@
-import { swSignUpRouter } from "./userSwagger.js";
-const swagger = {
+import { swUserRouter } from "./userSwagger.js";
+
+
+
+export const swagger = {
   openapi: "3.0.0",
   info: {
     title: "Express API",
@@ -12,6 +15,5 @@ const swagger = {
       description: "Development server",
     },
   ],
-  paths: {...swSignUpRouter},
+  paths: { ...swUserRouter },
 };
-export default swagger;

@@ -48,37 +48,26 @@ export class BaseValidator {
 
   /**
    * Response Validation
-   * @param {Object} res
-   * @returns {JSONResponse} If response validation succeeds
+   * @param {Object} result
+   * @param {number} statusCode
+   * @param {Object}  mongooseSession - Mongoose Transaction Session
+   * @returns {Promise<Void>} If response validation succeeds
    * @throws {Error} If validation fails and Roll backs mongoose DB transcations
    */
 
-  static resValidateSender() {
-    const validatorMiddleware = async (req, res, next) => {
-      const { error } = this.resSchema.validate(res.data, {
-        abortEarly: false,
-      });
-      const session = res.mongooseSession;
-      if (error) {
-        console.log("Response Validation Error:");
-        console.log(this.extractMessages(error.details));
-        if (session) {
-          await session.abortTransaction();
-          console.log("Respone validation Failed, Aborted Transcation");
-          session.endSession();
-        }
-        return next(sendError(500));
-      }
-      if (session) {
-        await session.commitTransaction();
-        console.log("Transaction Comitted");
-      }
-      console.log("RESPONSE:");
-      console.log(res.statusCode);
-      console.log(res.data);
-      return res.status(res.statusCode).json(res.data);
-    };
-    return validatorMiddleware;
+  static async resValidate(response, statusCode) {
+    const { error } = this.resSchema.validate(response, {
+      abortEarly: false,
+    });
+    if (error) {
+      console.log("Response Validation Error:");
+      console.log(this.extractMessages(error.details));
+      throw sendError(500);
+    }
+    console.log("RESPONSE:");
+    console.log(statusCode);
+    console.log(response);
+    return { response, statusCode };
   }
 
   static validate(data, schema) {

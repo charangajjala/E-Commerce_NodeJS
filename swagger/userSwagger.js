@@ -1,33 +1,8 @@
 import j2s from "joi-to-swagger";
 import * as userValidator from "../validations/userValidator.js";
+import { reqBody, resBody } from "../utils/swagger.js";
 
 const tag = "User";
-
-const reqBody = (action) => {
-  return {
-    content: {
-      "application/json": {
-        schema: { ...j2s(action.reqSchema).swagger },
-      },
-    },
-  };
-};
-
-const resBody = (action, code, desc) => {
-  return {
-    [code]: {
-      description: desc,
-      content: {
-        "application/json": {
-          schema: { ...j2s(action.resSchema).swagger },
-        },
-      },
-    },
-    default: {
-      description: "Corresponding Error message",
-    },
-  };
-};
 
 export const swPostSignUp = {
   summary: "Create the new user",
@@ -59,7 +34,16 @@ export const swGetUser = {
   responses: resBody(userValidator.getUser, 200, "User Fetched"),
 };
 
-export const swSignUpRouter = {
+export const swUserRouter = {
+  "/api/admin/user/signup": {
+    post: { ...swPostSignUp },
+  },
+  "/api/admin/user/login": {
+    post: { ...swPostLogin },
+  },
+  "/api/admin/user/:id": {
+    get: { ...swGetUser },
+  },
   "/api/user/signup": {
     post: { ...swPostSignUp },
   },

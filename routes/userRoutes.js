@@ -1,30 +1,51 @@
 import express from "express";
 
-import * as userController from "../controllers/userController.js";
-import * as userValidator from "../validations/userValidator.js";
 import { authenticate } from "../middlewares/authMiddleware.js";
-const router = express.Router();
+import {
+  AdminUserAPI,
+  AuthAPI,
+  UserAPI,
+} from "../controllers/userController/views.js";
+import * as userValidator from "../validations/userValidator.js";
 
+//open User Routes
+export const router = express.Router();
 router.post(
   "/signup",
   userValidator.postSignUp.reqValidator(),
-  userController.postSignUp.serve,
-  userValidator.postSignUp.resValidateSender()
+  AuthAPI.postSignUp
 );
 
 router.post(
   "/login",
   userValidator.postLogin.reqValidator(),
-  userController.postLogin.serve,
-  userValidator.postLogin.resValidateSender()
+  AuthAPI.postLogin
 );
 
 router.get(
   "/:id",
   authenticate,
   userValidator.getUser.reqValidator(),
-  userController.getUser.serve,
-  userValidator.getUser.resValidateSender()
+  UserAPI.get
 );
 
-export default router;
+//Admin User routes
+export const adminRouter = express.Router();
+adminRouter.post(
+  "/signup",
+  userValidator.postSignUp.reqValidator(),
+  AuthAPI.postSignUp
+);
+
+adminRouter.post(
+  "/login",
+  userValidator.postLogin.reqValidator(),
+  AuthAPI.postLogin
+);
+
+adminRouter.get(
+  "/:id",
+  authenticate,
+  userValidator.getUser.reqValidator(),
+  AdminUserAPI.get
+);
